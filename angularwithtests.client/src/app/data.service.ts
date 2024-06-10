@@ -9,4 +9,8 @@ export class DataService {
 
   customers: Customer[] = []
   constructor() { }
+
+  addCustomer(cust: Customer) {
+    this.customers.push(cust);
+  }
 }

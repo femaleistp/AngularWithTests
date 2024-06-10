@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CustomerListComponent } from './customer-list.component';
 import { Customer } from '../Customer';
+import { DataService } from '../data.service';
 
 class MockDataService {
   customers: Customer[] = [{
@@ -9,6 +10,10 @@ class MockDataService {
     lastName: 'Jones',
     phone: '5551212'
   }];
+
+  addCustomer(customer: Customer) {
+    this.customers.push(customer);
+  }
 }
 
 describe('CustomerListComponent', () => {
@@ -20,16 +25,16 @@ describe('CustomerListComponent', () => {
   //arrange
 
   beforeEach(() => {
+    dataService = new MockDataService();
     TestBed.configureTestingModule({
       declarations: [CustomerListComponent],
-      providers: [{ provide: dataService, useClass: MockDataService }]
+      providers: [{ provide: DataService, useValue: dataService }]
     });
     fixture = TestBed.createComponent(CustomerListComponent);
-    dataService.inject(MockDataService);
     component = fixture.componentInstance;
 
     customer = dataService.customers[0];
-}
+
     fixture.detectChanges();
   });
 
@@ -51,6 +56,17 @@ describe('CustomerListComponent', () => {
   it('should add a new customer when addCustomer is fired', () => {
     component.addCustomer();
 
-    expect(component.customers.length).toEqual(1);
-  })
+    expect(component.customers.length).toEqual(3);
+  });
+
+  it('should have Customer List as the heading', () => {
+    // find a specific element in our DOM
+
+    const heading: HTMLElement = fixture.nativeElement;
+    const h1 = heading.querySelector('h1')!;
+
+    expect(h1.textContent).toEqual("Customer List");
+    // expect that element to contain 'Customer List'
+  });
+
 });
