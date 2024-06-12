@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CustomerListComponent } from './customer-list.component';
 import { Customer } from '../Customer';
 import { DataService } from '../data.service';
+import { Observable, of } from 'rxjs';
 
 class MockDataService {
   customers: Customer[] = [{
@@ -11,9 +12,15 @@ class MockDataService {
     phone: '5551212'
   }];
 
-  addCustomer(customer: Customer) {
+  addCustomer(customer: Customer): Observable<Customer> {
     this.customers.push(customer);
+    return of(customer);
   }
+
+  getAllCustomers(): Observable<Customer[]> {
+    return of(this.customers);
+  }
+
 }
 
 describe('CustomerListComponent', () => {
@@ -22,8 +29,7 @@ describe('CustomerListComponent', () => {
   let customer: Customer;
   let dataService: MockDataService;
 
-  //arrange
-
+  // arrange
   beforeEach(() => {
     dataService = new MockDataService();
     TestBed.configureTestingModule({
@@ -39,15 +45,13 @@ describe('CustomerListComponent', () => {
   });
 
   it('should create', () => {
-    //act here
+    // act here
 
-    //assert here
+    // assert here
     expect(component).toBeTruthy();
   });
 
   it('should have a customer list', () => {
-    component.customers.push(customer);
-
     expect(component.customers).toBeDefined();
     expect(component.customers).toEqual([customer]);
     expect(component.customers[0].firstName).toEqual("Bob");
@@ -60,13 +64,11 @@ describe('CustomerListComponent', () => {
   });
 
   it('should have Customer List as the heading', () => {
-    // find a specific element in our DOM
-
+    // find a specific element in your DOM
     const heading: HTMLElement = fixture.nativeElement;
     const h1 = heading.querySelector('h1')!;
 
     expect(h1.textContent).toEqual("Customer List");
     // expect that element to contain 'Customer List'
   });
-
 });
